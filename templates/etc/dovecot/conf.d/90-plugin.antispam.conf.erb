@@ -1,0 +1,20 @@
+# Dovecot Antispam Plugin
+#
+# Pipes a mail to the $antispam_mail_sendmail command whenever a message gets
+# moved to or from the Junk folder. This is used to train spam filters.
+
+protocol imap {
+    mail_plugins = $mail_plugins antispam
+}
+
+plugin {
+    antispam_backend = pipe
+    antispam_spam = Junk
+    antispam_trash = Trash
+
+    antispam_mail_spam = <%= scope['dovecotng::plugin::antispam::antispam_mail_spam'] %>
+    antispam_mail_notspam = <%= scope['dovecotng::plugin::antispam::antispam_mail_notspam'] %>
+
+    antispam_mail_sendmail = <%= scope['dovecotng::plugin::antispam::antispam_mail_sendmail'] %>
+    antispam_mail_sendmail_args = <%= scope['dovecotng::plugin::antispam::antispam_mail_sendmail_args'] %>
+}
