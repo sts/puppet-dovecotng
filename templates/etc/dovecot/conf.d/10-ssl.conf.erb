@@ -45,10 +45,18 @@ ssl_key_password = <<%= scope['dovecotng::ssl_cert_key'] %>
 #ssl_cert_username_field = commonName
 
 # DH parameters length to use.
+<%- if scope['dovecotng::ssl_dh_params'] -%>
+ssl_dh = <%= scope['dovecotng::ssl_dh_params'] %>
+<%- else -%>
 #ssl_dh_parameters_length = 1024
+<%- end -%>
 
 # SSL protocols to use
+<%- if scope['dovecotng::ssl_protocols'] != 'false' -%>
 ssl_protocols = <%= scope['dovecotng::ssl_protocols'] %>
+<%- else -%>
+#ssl_protocols = !SSLv3
+<%- end -%>
 
 # SSL ciphers to use
 ssl_cipher_list = <%= scope['dovecotng::ssl_cipher_list'] %>

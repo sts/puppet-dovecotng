@@ -92,6 +92,28 @@ imap_client_workarounds = <%= scope['dovecotng::protocol::imap::imap_client_work
 imap_urlauth_host = <%= scope['dovecotng::protocol::imap::imap_urlauth_host'] %>
 <%- end -%>
 
+# Enable IMAP LITERAL- extension (replaces LITERAL+)
+#imap_literal_minus = no
+<%- if scope['dovecotng::protocol::imap::imap_literal_minus'] -%>
+imap_literal_minus = yes
+<%- end -%>
+
+# What happens when FETCH fails due to some internal error:
+#   disconnect-immediately:
+#     The FETCH is aborted immediately and the IMAP client is disconnected.
+#   disconnect-after:
+#     The FETCH runs for all the requested mails returning as much data as
+#     possible. The client is finally disconnected without a tagged reply.
+#   no-after:
+#     Same as disconnect-after, but tagged NO reply is sent instead of
+#     disconnecting the client. If the client attempts to FETCH the same failed
+#     mail more than once, the client is disconnected. This is to avoid clients
+#     from going into infinite loops trying to FETCH a broken mail.
+#imap_fetch_failure = disconnect-immediately
+<%- if scope['dovecotng::protocol::imap::imap_fetch_failure'] -%>
+imap_fetch_failure = <%= scope['dovecotng::protocol::imap::imap_fetch_failure'] %>
+<%- end -%>
+
 protocol imap {
   # Space separated list of plugins to load (default is global mail_plugins).
   #mail_plugins = $mail_plugins

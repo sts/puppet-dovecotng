@@ -12,7 +12,7 @@ postmaster_address = <%= scope['dovecotng::postmaster_address'] %>
 
 # If user is over quota, return with temporary failure instead of
 # bouncing the mail.
-#quota_full_tempfail = no
+quota_full_tempfail = <%= scope.call_function('dovecotng::bool2dovecot', [ scope['dovecotng::_lda']['quota_full_tempfail'] ]) %>
 
 # Binary to use for sending mails.
 #sendmail_path = /usr/sbin/sendmail
@@ -29,20 +29,20 @@ postmaster_address = <%= scope['dovecotng::postmaster_address'] %>
 #rejection_reason = Your message to <%%t> was automatically rejected:%n%r
 
 # Delimiter character between local-part and detail in email address.
-#recipient_delimiter = +
+recipient_delimiter = <%= scope['dovecotng::_lda']['recipient_delimiter'] %>
 
 # Header where the original recipient address (SMTP's RCPT TO: address) is taken
 # from if not available elsewhere. With dovecot-lda -a parameter overrides this. 
 # A commonly used header for this is X-Original-To.
-#lda_original_recipient_header =
+lda_original_recipient_header = <%= scope['dovecotng::_lda']['lda_original_recipient_header'] %>
 
 # Should saving a mail to a nonexistent mailbox automatically create it?
-lda_mailbox_autocreate = yes
+lda_mailbox_autocreate = <%= scope.call_function('dovecotng::bool2dovecot', [ scope['dovecotng::_lda']['lda_mailbox_autocreate'] ]) %>
 
 # Should automatically created mailboxes be also automatically subscribed?
-lda_mailbox_autosubscribe = yes
+lda_mailbox_autosubscribe = <%= scope.call_function('dovecotng::bool2dovecot', [ scope['dovecotng::_lda']['lda_mailbox_autosubscribe'] ]) %>
 
 protocol lda {
   # Space separated list of plugins to load (default is global mail_plugins).
-  #mail_plugins = $mail_plugins
+  mail_plugins = $mail_plugins <%= scope['dovecotng::_lda']['mail_plugins'] %>
 }

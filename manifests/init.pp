@@ -9,6 +9,7 @@ class dovecotng(
   String  $ssl_key         = undef,
   Boolean $ssl_prefer_server_ciphers = false,
   String  $ssl_additional_config = undef,
+  Optional[String] $ssl_dh_params = undef,
   String  $ssl_protocols   = '!SSLv3',
   String  $ssl_cipher_list = 'EDH+CAMELLIA:EDH+aRSA:EECDH+aRSA+AESGCM:EECDH+aRSA+SHA384:EECDH+aRSA+SHA256:EECDH:+CAMELLIA256:+AES256:+CAMELLIA128:+AES128:+SSLv3:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!DSS:!RC4:!SEED:!ECDSA:CAMELLIA256-SHA:AES256-SHA:CAMELLIA128-SHA:AES128-SHA',
   String  $vmail_user      = 'vmail',
@@ -43,8 +44,8 @@ class dovecotng(
 
   Boolean $disable_plaintext_auth   = true,
   Integer $auth_cache_size         = 0,
-  Integer $auth_cache_ttl          = 0,
-  Integer $auth_cache_negative_ttl = 0,
+  String  $auth_cache_ttl          = '0',
+  String  $auth_cache_negative_ttl = '0',
   Integer $auth_worker_max_count   = 30,
   Integer $auth_failure_delay      = 3,
 
@@ -54,20 +55,24 @@ class dovecotng(
   Integer $anvil_client_limit      = 2000,
 
   # Logging
+  String  $log_debug              = "",
+  String  $log_core_filter        = "",
   Boolean $auth_verbose           = false,
   Boolean $auth_verbose_passwords = false,
   Boolean $auth_debug             = false,
   Boolean $auth_debug_passwords   = false,
   Boolean $mail_debug             = false,
+  Boolean $stats                  = false,
   Boolean $verbose_ssl            = false,
+  Hash    $lda                    = {},
   Hash    $protocols              = {
       'pop3' => {},
       'imap' => {},
   },
 ) {
 
-  $ssl_cert_path              = "/etc/ssl/${ssl_cert}.pem"
-  $ssl_key_path              = "/etc/ssl/${ssl_cert}.pem"
+  $ssl_cert_path = "${ssl_cert}"
+  $ssl_key_path = "${ssl_cert}"
 
   $services_defaults = {
     'auth' => {
@@ -93,6 +98,17 @@ class dovecotng(
   }
 
   $_mail_namespaces = deep_merge($mail_namespaces_defaults, $mail_namespaces)
+
+
+  $lda_defaults = {
+    'quota_full_tempfail'           => false,
+    'recipient_delimiter'           => '+',
+    'lda_mailbox_autocreate'        => true,
+    'lda_mailbox_autosubscribe'     => true,
+    'lda_original_recipient_header' => '',
+  }
+
+  $_lda = deep_merge($lda_defaults, $lda)
 
   contain dovecotng::prepare
   contain dovecotng::install

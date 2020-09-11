@@ -1,0 +1,5 @@
+class dovecotng::protocol::sieve(
+) {
+
+}
+

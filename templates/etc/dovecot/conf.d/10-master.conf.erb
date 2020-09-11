@@ -6,7 +6,7 @@ default_client_limit = <%= scope['dovecotng::default_client_limit'] %>
 # Default VSZ (virtual memory size) limit for service processes. This is mainly
 # intended to catch and kill processes that leak memory before they eat up
 # everything.
-#default_vsz_limit = 256M
+default_vsz_limit = 2048M
 
 # Login user is internally used by login processes. This is the most untrusted
 # user in Dovecot system. It shouldn't have access to anything at all.
@@ -99,7 +99,17 @@ service auth {
   # Auth process is run as this user.
   user = $default_internal_user
 }
+<% if scope['dovecotng::stats'] == true %>
+service stats {
+  # make this large enough so all Dovecot processes (especially imap, pop3, lmtp) can connect to it
+  client_limit = <%= scope['dovecotng::default_client_limit'] * 4 %>
 
+  unix_listener stats-writer {
+    group = vmail
+    mode = 0660
+  }
+}
+<% end %>
 service auth-worker {
   # Auth worker process is run as root by default, so that it can access
   # /etc/shadow. If this isn't necessary, the user should be changed to
