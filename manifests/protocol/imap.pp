@@ -9,6 +9,8 @@ class dovecotng::protocol::imap(
    Optional[String]  $imap_client_workarounds = undef,
    Optional[String]  $imap_urlauth_host = undef,
    Optional[String]  $imap_mail_plugins = undef,
+   Optional[String]  $imap_literal_minus = undef,
+   Optional[String]  $imap_fetch_failure = undef,
    Optional[Integer] $imap_mail_max_userip_connections = undef,
 ) {
 
