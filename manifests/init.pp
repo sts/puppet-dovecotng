@@ -7,6 +7,7 @@ class dovecotng(
   Array   $plugins          = ['antispam'],
   String  $ssl_cert         = undef,
   String  $ssl_key          = undef,
+  String  $ssl_key_password = undef,
   Boolean $ssl_prefer_server_ciphers = false,
   String  $ssl_additional_config = undef,
   Optional[String] $ssl_dh_params = undef,
@@ -70,9 +71,6 @@ class dovecotng(
       'imap' => {},
   },
 ) {
-
-  $ssl_cert_path = "${ssl_cert}"
-  $ssl_key_path = "${ssl_key}"
 
   $services_defaults = {
     'auth' => {

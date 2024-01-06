@@ -9,15 +9,15 @@ ssl = yes
 # dropping root privileges, so keep the key file unreadable by anyone but
 # root. Included doc/mkcert.sh can be used to easily generate self-signed
 # certificate, just make sure to update the domains in dovecot-openssl.cnf
-ssl_cert = <<%= scope['dovecotng::ssl_cert_path'] %>
-ssl_key = <<%= scope['dovecotng::ssl_key_path'] %>
+ssl_cert = <<%= scope['dovecotng::ssl_cert'] %>
+ssl_key = <<%= scope['dovecotng::ssl_key'] %>
 
 # If key file is password protected, give the password here. Alternatively
 # give it when starting dovecot with -p parameter. Since this file is often
 # world-readable, you may want to place this setting instead to a different
 # root owned 0600 file by using ssl_key_password = <path.
-<%- if scope['dovecotng::ssl_cert_key'] -%>
-ssl_key_password = <<%= scope['dovecotng::ssl_cert_key'] %>
+<%- if scope['dovecotng::ssl_key_password'] -%>
+ssl_key_password = <<%= scope['dovecotng::ssl_key_password'] %>
 <%- end -%>
 
 # PEM encoded trusted certificate authority. Set this only if you intend to use
