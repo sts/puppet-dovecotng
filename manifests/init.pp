@@ -11,7 +11,7 @@ class dovecotng(
   String  $ssl_additional_config = undef,
   Optional[String] $ssl_dh_params = undef,
   String  $ssl_min_protocol = 'TLSv1.2',
-  String  $ssl_cipher_list  = 'ALL:!kRSA:!SRP:!kDHd:!DSS:!aNULL:!eNULL:!EXPORT:!DES:!3DES:!MD5:!PSK:!RC4:!ADH:!LOW@STRENGTH',
+  String  $ssl_cipher_list  = 'EDH+CAMELLIA:EDH+aRSA:EECDH+aRSA+AESGCM:EECDH+aRSA+SHA384:EECDH+aRSA+SHA256:EECDH:+CAMELLIA256:+AES256:+CAMELLIA128:+AES128:+SSLv3:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!DSS:!RC4:!SEED:!ECDSA:CAMELLIA256-SHA:AES256-SHA:CAMELLIA128-SHA:AES128-SHA',
   String  $vmail_user       = 'vmail',
   String  $vmail_group      = 'vmail',
   String  $vmail_path       = '/srv/mail',
@@ -72,7 +72,7 @@ class dovecotng(
 ) {
 
   $ssl_cert_path = "${ssl_cert}"
-  $ssl_key_path = "${ssl_cert}"
+  $ssl_key_path = "${ssl_key}"
 
   $services_defaults = {
     'auth' => {

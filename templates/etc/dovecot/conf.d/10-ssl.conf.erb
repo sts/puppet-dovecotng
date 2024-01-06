@@ -54,7 +54,7 @@ ssl_key_password = <<%= scope['dovecotng::ssl_cert_key'] %>
 # Or migrate from old ssl-parameters.dat file with the command dovecot
 # gives on startup when ssl_dh is unset.
 <%- if scope['dovecotng::ssl_dh_params'] -%>
-ssl_dh = <%= scope['dovecotng::ssl_dh_params'] %>
+ssl_dh = <<%= scope['dovecotng::ssl_dh_params'] %>
 <%- else -%>
 #ssl_dh_parameters_length = 1024
 <%- end -%>
