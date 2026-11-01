@@ -1,0 +1,9 @@
+---
+fixtures:
+  repositories:
+    apt:
+      repo: https://github.com/puppetlabs/puppetlabs-apt.git
+      ref: d172e8588c88c3e2ad85ad4be8ade1c603d23e6d
+    stdlib:
+      repo: https://github.com/puppetlabs/puppetlabs-stdlib.git
+      ref: 52740b7c3570b1828ed78c02a566b92a8c2b7329

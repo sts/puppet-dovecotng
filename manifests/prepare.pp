@@ -12,7 +12,7 @@ class dovecotng::prepare
     apt::pin { 'dovecot':
       ensure   => $ensure,
       packages => "dovecot*",
-      release  => "${::lsbdistcodename}-backports",
+      release  => "${facts['os']['distro']['codename']}-backports",
       priority => 600,
     }
   }

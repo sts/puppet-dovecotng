@@ -13,12 +13,17 @@
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
         "10.0",
-        "11.0"
+        "11.0",
+        "12.0",
+        "13.0"
      ]
     }
   ],
   "dependencies": [
     { "name": "puppetlabs/stdlib", "version_requirement": ">= 3.2.0" },
     { "name": "puppetlabs/apt",  "version_requirement": ">= 2.0.0" }
+  ],
+  "requirements": [
+    { "name": "openvox", "version_requirement": ">= 8.0.0 < 9.0.0" }
   ]
 }

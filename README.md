@@ -115,6 +115,20 @@ class { 'dovecot::plugin::antispam':
 }
 ```
 
+## Testing
+
+The test suite runs against OpenVox 8 and covers catalog compilation,
+authentication backends, package and service management, protocol settings,
+and rendered Dovecot configuration.
+
+```sh
+bundle install
+bundle exec rake validate
+bundle exec rake spec
+```
+
+Set `OPENVOX_GEM_VERSION` to test another supported OpenVox 8 release.
+
 # BUGS
 
 For bugs or feature requests, please use the GitHub issue tracker.
