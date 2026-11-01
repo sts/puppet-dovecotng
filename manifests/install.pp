@@ -1,27 +1,27 @@
 class dovecotng::install
 {
 
-  $imapd_state = has_key($::dovecotng::protocols,'imap') ? {
+  $imapd_state = ('imap' in $::dovecotng::protocols) ? {
     true  => 'present',
     false => 'absent',
   }
 
-  $pop3d_state = has_key($::dovecotng::protocols,'pop3') ? {
+  $pop3d_state = ('pop3' in $::dovecotng::protocols) ? {
     true  => 'present',
     false => 'absent',
   }
 
-  $managesieve_state = has_key($::dovecotng::protocols,'sieve') ? {
+  $managesieve_state = ('sieve' in $::dovecotng::protocols) ? {
     true  => 'present',
     false => 'absent',
   }
 
-  $antispam_state = member($::dovecotng::plugins,'antispam') ? {
+  $antispam_state = ('antispam' in $::dovecotng::plugins) ? {
     true  => 'present',
     false => 'absent',
   }
 
-  $sieve_state = member($::dovecotng::plugins,'sieve') ? {
+  $sieve_state = ('sieve' in $::dovecotng::plugins) ? {
     true  => 'present',
     false => 'absent',
   }

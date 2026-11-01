@@ -1,7 +1,7 @@
 class dovecotng::plugin::sieve(
 ) {
 
-  $sieve_state = member($::dovecotng::plugins,'sieve') ? {
+  $sieve_state = ('sieve' in $::dovecotng::plugins) ? {
     true  => 'present',
     false => 'absent',
   }
