@@ -18,7 +18,10 @@ DOC
   raise(Puppet::ParseError, "bool2dovecot() wrong number of arguments. Given: #{args.size} for 1)") if args.size != 1
 
   arg = args[0]
-  return 'no' if arg.nil? || arg == false || arg =~ %r{false}i || arg == :undef
-  return 'yes' if arg == true || arg =~ %r{true}i
+  return 'no' if arg.nil? || arg == false || arg == :undef
+  return 'yes' if arg == true
+  return 'no' if arg.is_a?(String) && arg.match?(%r{false}i)
+  return 'yes' if arg.is_a?(String) && arg.match?(%r{true}i)
+
   return arg.to_s
 end

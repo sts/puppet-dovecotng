@@ -14,8 +14,11 @@
 #    # => 'no'
 Puppet::Functions.create_function(:'dovecotng::bool2dovecot') do
   def bool2dovecot(arg)
-    return 'no' if arg.nil? || arg == false || arg =~ %r{false}i || arg == :undef
-    return 'yes' if arg == true || arg =~ %r{true}i
+    return 'no' if arg.nil? || arg == false || arg == :undef
+    return 'yes' if arg == true
+    return 'no' if arg.is_a?(String) && arg.match?(%r{false}i)
+    return 'yes' if arg.is_a?(String) && arg.match?(%r{true}i)
+
     arg.to_s
   end
 end

@@ -71,7 +71,7 @@ pop3_uidl_format = <%= scope['dovecotng::protocol::pop3::pop3_uidl_format'] %>
 # won't change those UIDLs. Currently this works only with Maildir.
 #pop3_save_uidl = no
 <%- if scope['dovecotng::protocol::pop3::pop3_save_uidl'] -%>
-pop3_save_uidl = <%= scope.call_function('dovecotng::bool2dovecot', scope['dovecotng::protocol::pop3::pop3_save_uidl']) %>
+pop3_save_uidl = <%= scope.call_function('dovecotng::bool2dovecot', [ scope['dovecotng::protocol::pop3::pop3_save_uidl'] ]) %>
 <%- end -%>
 
 # What to do about duplicate UIDLs if they exist?
