@@ -50,9 +50,6 @@ service pop3-login {
 service lmtp {
 <%- scope['dovecotng::_services']['lmtp']['unix_listener'].each do |listener,values| -%>
   unix_listener <%= listener %> {
-  <%- if values.empty? -%>
-    #mode = 0666
-  <%- end -%>
   <%- values.sort.each do |key,value| -%>
     <%= "#{key} = #{value}" %>
   <%- end -%>

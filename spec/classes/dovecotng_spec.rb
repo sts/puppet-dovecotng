@@ -95,17 +95,17 @@ describe 'dovecotng' do
 
   it 'renders the default LMTP listener without overrides' do
     is_expected.to contain_file('/etc/dovecot/conf.d/10-master.conf')
-      .with_content(%r{^service lmtp \{\n  unix_listener lmtp \{\n    #mode = 0666\n  \}$})
+      .with_content(%r{^service lmtp \{\n  unix_listener lmtp \{\n  \}$})
   end
 
-  context 'with an LMTP listener mode override' do
+  context 'with LMTP listener overrides' do
     let(:params) do
-      super().merge(services: { 'lmtp' => { 'unix_listener' => { 'lmtp' => { 'mode' => '0666' } } } })
+      super().merge(services: { 'lmtp' => { 'unix_listener' => { 'lmtp' => { 'mode' => '0660', 'user' => 'root', 'group' => 'Debian-exim' } } } })
     end
 
-    it 'renders the configured LMTP listener mode' do
+    it 'renders the configured LMTP listener settings' do
       is_expected.to contain_file('/etc/dovecot/conf.d/10-master.conf')
-        .with_content(%r{^service lmtp \{\n  unix_listener lmtp \{\n    mode = 0666\n  \}$})
+        .with_content(%r{^service lmtp \{\n  unix_listener lmtp \{\n    group = Debian-exim\n    mode = 0660\n    user = root\n  \}$})
     end
   end
 
