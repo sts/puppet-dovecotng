@@ -26,6 +26,6 @@ userdb {
 # below vmail_path. <doc/wiki/UserDatabase.Static.txt>
 userdb {
   driver = static
-  args = uid=<%= scope['dovecotng::vmail_user'] %> gid=<%= scope['dovecotng::vmail_group'] %> home=<%= scope['dovecotng::vmail_path'] %>/%d/%n
+  args = uid=<%= scope['dovecotng::vmail_user'] %> gid=<%= scope['dovecotng::vmail_group'] %> home=<%= scope['dovecotng::vmail_path'] %>/%{domain}/%{username}
 }
 <%- end -%>

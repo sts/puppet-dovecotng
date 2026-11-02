@@ -169,7 +169,7 @@ describe 'dovecotng' do
     context 'on Dovecot 2.3 without a user_query' do
       it 'uses a static userdb for the vmail user' do
         is_expected.to contain_file('/etc/dovecot/conf.d/auth-sql.conf.ext')
-          .with_content(%r{^userdb \{\n  driver = static\n  args = uid=vmail gid=vmail home=/srv/mail/%d/%n\n\}$})
+          .with_content(%r{^userdb \{\n  driver = static\n  args = uid=vmail gid=vmail home=/srv/mail/%\{domain\}/%\{username\}\n\}$})
           .without_content(%r{driver = sql\n  args = /etc/dovecot/dovecot-sql\.conf\.ext\n\}\n\z})
         expect(sensitive_content('/etc/dovecot/dovecot-sql.conf.ext')).not_to match(%r{^(user|iterate)_query})
       end
