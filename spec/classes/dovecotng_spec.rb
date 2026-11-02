@@ -109,6 +109,15 @@ describe 'dovecotng' do
     end
   end
 
+  context 'with an empty SSL key password' do
+    let(:params) { super().merge(ssl_key_password: '') }
+
+    it 'does not render an ssl_key_password setting' do
+      is_expected.to contain_file('/etc/dovecot/conf.d/10-ssl.conf')
+        .without_content(%r{^ssl_key_password})
+    end
+  end
+
   context 'with server cipher preference enabled' do
     let(:params) { super().merge(ssl_prefer_server_ciphers: true) }
 

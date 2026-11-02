@@ -16,7 +16,7 @@ ssl_key = <<%= scope['dovecotng::ssl_key'] %>
 # give it when starting dovecot with -p parameter. Since this file is often
 # world-readable, you may want to place this setting instead to a different
 # root owned 0600 file by using ssl_key_password = <path.
-<%- if scope['dovecotng::ssl_key_password'] -%>
+<%- if scope['dovecotng::ssl_key_password'] && !scope['dovecotng::ssl_key_password'].empty? -%>
 ssl_key_password = <<%= scope['dovecotng::ssl_key_password'] %>
 <%- end -%>
 
