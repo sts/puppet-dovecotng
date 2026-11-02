@@ -48,9 +48,16 @@ service pop3-login {
 }
 
 service lmtp {
-  unix_listener lmtp {
+<%- scope['dovecotng::_services']['lmtp']['unix_listener'].each do |listener,values| -%>
+  unix_listener <%= listener %> {
+  <%- if values.empty? -%>
     #mode = 0666
+  <%- end -%>
+  <%- values.sort.each do |key,value| -%>
+    <%= "#{key} = #{value}" %>
+  <%- end -%>
   }
+<%- end -%>
 
   # Create inet listener only if you can't use the above UNIX socket
   #inet_listener lmtp {

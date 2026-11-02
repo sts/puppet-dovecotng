@@ -93,6 +93,22 @@ describe 'dovecotng' do
       .with_content(%r{^ssl_prefer_server_ciphers = no$})
   end
 
+  it 'renders the default LMTP listener without overrides' do
+    is_expected.to contain_file('/etc/dovecot/conf.d/10-master.conf')
+      .with_content(%r{^service lmtp \{\n  unix_listener lmtp \{\n    #mode = 0666\n  \}$})
+  end
+
+  context 'with an LMTP listener mode override' do
+    let(:params) do
+      super().merge(services: { 'lmtp' => { 'unix_listener' => { 'lmtp' => { 'mode' => '0666' } } } })
+    end
+
+    it 'renders the configured LMTP listener mode' do
+      is_expected.to contain_file('/etc/dovecot/conf.d/10-master.conf')
+        .with_content(%r{^service lmtp \{\n  unix_listener lmtp \{\n    mode = 0666\n  \}$})
+    end
+  end
+
   context 'with server cipher preference enabled' do
     let(:params) { super().merge(ssl_prefer_server_ciphers: true) }
 

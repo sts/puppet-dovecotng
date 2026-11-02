@@ -79,6 +79,11 @@ class dovecotng(
         'auth-client' => { 'mode' => '0660', 'user' => 'root', 'group' => 'dovecot'  },
       },
     },
+    'lmtp' => {
+      'unix_listener' => {
+        'lmtp' => {},
+      },
+    },
   }
 
   $_services = deep_merge($services_defaults, $services)
