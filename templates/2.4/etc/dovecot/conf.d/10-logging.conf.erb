@@ -1,0 +1,16 @@
+# This file is managed by Puppet.
+##
+## Log destination and verbosity.
+##
+
+# Filter for which debug messages are logged (verbose_ssl adds category=ssl).
+log_debug = <%= scope['dovecotng::config::log_debug'] %>
+
+# Filter for which messages are logged by the core.
+log_core_filter = <%= scope['dovecotng::log_core_filter'] %>
+
+auth_verbose = <%= scope.call_function('dovecotng::bool2dovecot', [scope['dovecotng::auth_verbose']]) %>
+auth_verbose_passwords = <%= scope.call_function('dovecotng::bool2dovecot', [scope['dovecotng::auth_verbose_passwords']]) %>
+auth_debug = <%= scope.call_function('dovecotng::bool2dovecot', [scope['dovecotng::auth_debug']]) %>
+auth_debug_passwords = <%= scope.call_function('dovecotng::bool2dovecot', [scope['dovecotng::auth_debug_passwords']]) %>
+mail_debug = <%= scope.call_function('dovecotng::bool2dovecot', [scope['dovecotng::mail_debug']]) %>

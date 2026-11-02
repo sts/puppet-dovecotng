@@ -1,5 +1,16 @@
 class dovecotng::config
 {
+  $templates = $dovecotng::template_dir
+
+  # Dovecot 2.4 removed verbose_ssl in favour of a log_debug filter.
+  $log_debug = $dovecotng::verbose_ssl ? {
+    true    => $dovecotng::log_debug ? {
+      ''      => 'category=ssl',
+      default => "(${dovecotng::log_debug}) OR category=ssl",
+    },
+    default => $dovecotng::log_debug,
+  }
+
   user { $dovecotng::vmail_user:
     ensure     => present,
     gid        => $dovecotng::vmail_group,
@@ -32,27 +43,27 @@ class dovecotng::config
        mode   => '0750';
 
     '/etc/dovecot/dovecot.conf':
-      content => template('dovecotng/etc/dovecot/dovecot.conf.erb');
+      content => template("${templates}/dovecot.conf.erb");
 
     '/etc/dovecot/conf.d/10-auth.conf':
-      content => template('dovecotng/etc/dovecot/conf.d/10-auth.conf.erb');
+      content => template("${templates}/conf.d/10-auth.conf.erb");
 
     '/etc/dovecot/conf.d/10-anvil.conf':
       content => template('dovecotng/etc/dovecot/conf.d/10-anvil.conf.erb');
 
     '/etc/dovecot/conf.d/10-logging.conf':
-      content => template('dovecotng/etc/dovecot/conf.d/10-logging.conf.erb');
+      content => template("${templates}/conf.d/10-logging.conf.erb");
 
     '/etc/dovecot/conf.d/10-mail.conf':
-      content => template('dovecotng/etc/dovecot/conf.d/10-mail.conf.erb');
+      content => template("${templates}/conf.d/10-mail.conf.erb");
 
     '/etc/dovecot/conf.d/10-master.conf':
       content => template('dovecotng/etc/dovecot/conf.d/10-master.conf.erb');
 
     '/etc/dovecot/conf.d/10-ssl.conf':
-      content => template('dovecotng/etc/dovecot/conf.d/10-ssl.conf.erb');
+      content => template("${templates}/conf.d/10-ssl.conf.erb");
 
     '/etc/dovecot/conf.d/15-lda.conf':
-      content => template('dovecotng/etc/dovecot/conf.d/15-lda.conf.erb');
+      content => template("${templates}/conf.d/15-lda.conf.erb");
   }
 }

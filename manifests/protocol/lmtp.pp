@@ -14,5 +14,6 @@ class dovecotng::protocol::lmtp(
     group   => 'root',
     mode    => '0644',
     content => template('dovecotng/etc/dovecot/conf.d/20-lmtp.conf.erb'),
+    notify  => Class['dovecotng::service'],
   }
 }

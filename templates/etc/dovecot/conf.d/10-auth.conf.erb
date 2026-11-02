@@ -85,7 +85,7 @@ auth_worker_max_count = <%= scope['dovecotng::auth_worker_max_count'] %>
 #auth_winbind_helper_path = /usr/bin/ntlm_auth
 
 # Time to delay before replying to failed authentications.
-#auth_failure_delay = 2 secs
+auth_failure_delay = <%= scope['dovecotng::auth_failure_delay'] %> secs
 
 # Require a valid SSL client certificate or the authentication fails.
 #auth_ssl_require_client_cert = no
@@ -128,4 +128,4 @@ auth_mechanisms = plain login
 #!include auth-checkpassword.conf.ext
 #!include auth-vpopmail.conf.ext
 #!include auth-static.conf.ext
-!include auth-<%= scope['dovecotng::auth_backend']['type'] %>.conf.ext
+!include auth-<%= scope['dovecotng::_auth_backend']['type'] %>.conf.ext

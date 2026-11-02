@@ -1,5 +1,7 @@
 # Transform a supposed boolean to yes or no. Pass all other values through.
-# Given a nil value (undef), bool2dovecot will return 'no'
+# Given a nil value (undef), bool2dovecot will return 'no'. Only the exact
+# strings "true" and "false" (any case) are treated as booleans, so values
+# like "falsepositives/" pass through unchanged.
 #
 # Example:
 #
@@ -16,8 +18,8 @@ Puppet::Functions.create_function(:'dovecotng::bool2dovecot') do
   def bool2dovecot(arg)
     return 'no' if arg.nil? || arg == false || arg == :undef
     return 'yes' if arg == true
-    return 'no' if arg.is_a?(String) && arg.match?(%r{false}i)
-    return 'yes' if arg.is_a?(String) && arg.match?(%r{true}i)
+    return 'no' if arg.is_a?(String) && arg.match?(%r{\Afalse\z}i)
+    return 'yes' if arg.is_a?(String) && arg.match?(%r{\Atrue\z}i)
 
     arg.to_s
   end

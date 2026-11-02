@@ -1,0 +1,21 @@
+# This file is managed by Puppet.
+##
+## Mailbox locations and namespaces
+##
+
+mail_driver = <%= scope['dovecotng::_mail_driver'] %>
+<%- if scope['dovecotng::_mail_path'] -%>
+mail_path = <%= scope['dovecotng::_mail_path'] %>
+<%- end -%>
+<%- if scope['dovecotng::mail_home'] -%>
+mail_home = <%= scope.call_function('dovecotng::v24_variables', [scope['dovecotng::mail_home']]) %>
+<%- end -%>
+<%- scope['dovecotng::_mail_namespaces'].sort.each do |name, settings| -%>
+
+namespace <%= name %> {
+<%- settings.sort.each do |key, value| -%>
+<%- next if value.nil? || value == :undef || value == '' -%>
+  <%= key %> = <%= scope.call_function('dovecotng::bool2dovecot', [value]) %>
+<%- end -%>
+}
+<%- end -%>

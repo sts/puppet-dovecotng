@@ -1,0 +1,17 @@
+# This file is managed by Puppet.
+##
+## LDA specific settings (also used by LMTP)
+##
+
+postmaster_address = <%= scope['dovecotng::postmaster_address'] %>
+quota_full_tempfail = <%= scope.call_function('dovecotng::bool2dovecot', [ scope['dovecotng::_lda']['quota_full_tempfail'] ]) %>
+recipient_delimiter = <%= scope['dovecotng::_lda']['recipient_delimiter'] %>
+lda_original_recipient_header = <%= scope['dovecotng::_lda']['lda_original_recipient_header'] %>
+lda_mailbox_autocreate = <%= scope.call_function('dovecotng::bool2dovecot', [ scope['dovecotng::_lda']['lda_mailbox_autocreate'] ]) %>
+lda_mailbox_autosubscribe = <%= scope.call_function('dovecotng::bool2dovecot', [ scope['dovecotng::_lda']['lda_mailbox_autosubscribe'] ]) %>
+
+protocol lda {
+<%- if scope['dovecotng::_lda']['mail_plugins'] -%>
+<%= scope.call_function('dovecotng::mail_plugins', ["$mail_plugins #{scope['dovecotng::_lda']['mail_plugins']}", '2.4', '  ']) %>
+<%- end -%>
+}

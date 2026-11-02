@@ -20,6 +20,9 @@ describe 'dovecotng' do
 
   let(:params) do
     {
+      auth_backend: SQL_BACKEND,
+      ssl_cert: '/etc/ssl/certs/mail.pem',
+      ssl_key: '/etc/ssl/private/mail.key',
       plugins: [],
       protocols: {},
     }

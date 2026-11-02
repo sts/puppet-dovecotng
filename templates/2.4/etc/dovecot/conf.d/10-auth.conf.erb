@@ -1,0 +1,26 @@
+# This file is managed by Puppet.
+##
+## Authentication processes
+##
+
+# Allow cleartext authentication without SSL/TLS. Connections from
+# localhost are always considered secure.
+auth_allow_cleartext = <%= scope.call_function('dovecotng::bool2dovecot', [!scope['dovecotng::disable_plaintext_auth']]) %>
+
+# Authentication cache size. 0 means it's disabled.
+auth_cache_size = <%= scope['dovecotng::auth_cache_size'] %>
+auth_cache_ttl = <%= scope['dovecotng::auth_cache_ttl'] %>
+auth_cache_negative_ttl = <%= scope['dovecotng::auth_cache_negative_ttl'] %>
+
+# Time to delay before replying to failed authentications.
+auth_failure_delay = <%= scope['dovecotng::auth_failure_delay'] %> secs
+
+# Space separated list of wanted authentication mechanisms.
+auth_mechanisms = plain login
+
+# Maximum number of dovecot-auth worker processes (was auth_worker_max_count).
+service auth-worker {
+  process_limit = <%= scope['dovecotng::auth_worker_max_count'] %>
+}
+
+!include auth-<%= scope['dovecotng::_auth_backend']['type'] %>.conf.ext

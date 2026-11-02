@@ -3,14 +3,18 @@
 ##
 
 # SSL/TLS support: yes, no, required. <doc/wiki/SSL.txt>
-ssl = yes
+ssl = <%= scope['dovecotng::ssl'] %>
 
 # PEM encoded X.509 SSL/TLS certificate and private key. They're opened before
 # dropping root privileges, so keep the key file unreadable by anyone but
 # root. Included doc/mkcert.sh can be used to easily generate self-signed
 # certificate, just make sure to update the domains in dovecot-openssl.cnf
+<%- if scope['dovecotng::ssl_cert'] -%>
 ssl_cert = <<%= scope['dovecotng::ssl_cert'] %>
+<%- end -%>
+<%- if scope['dovecotng::ssl_key'] -%>
 ssl_key = <<%= scope['dovecotng::ssl_key'] %>
+<%- end -%>
 
 # If key file is password protected, give the password here. Alternatively
 # give it when starting dovecot with -p parameter. Since this file is often

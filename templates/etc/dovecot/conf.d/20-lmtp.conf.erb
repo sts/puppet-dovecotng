@@ -55,7 +55,7 @@ lmtp_client_workarounds = <%= scope['dovecotng::protocol::lmtp::lmtp_client_work
 protocol lmtp {
   # Space separated list of plugins to load (default is global mail_plugins).
 <%- if scope['dovecotng::protocol::lmtp::lmtp_mail_plugins'] -%>
-  mail_plugins = <%= scope['dovecotng::protocol::lmtp::lmtp_mail_plugins'] %>
+<%= scope.call_function('dovecotng::mail_plugins', [scope['dovecotng::protocol::lmtp::lmtp_mail_plugins'], scope['dovecotng::version'], '  ']) %>
 <%- else -%>
   #mail_plugins = $mail_plugins
 <%- end -%>

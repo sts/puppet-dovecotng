@@ -1,0 +1,52 @@
+<%- |
+  String           $driver,
+  Optional[String] $host,
+  Optional[String] $path,
+  Optional[String] $database,
+  Optional[String] $username,
+  Any              $password,
+  Optional[String] $default_pass_scheme,
+  Hash             $queries,
+| -%>
+<%-
+  # This template may be rendered on the agent (Deferred password), so it
+  # only uses built-in functions.
+  $secret = $password ? { undef => undef, default => $password.unwrap }
+  $quoted = $secret ? {
+    undef   => undef,
+    default => "\"${secret.regsubst('(["\\\\])', '\\\\\1', 'G')}\"",
+  }
+-%>
+# This file is managed by Puppet.
+#
+# SQL connection settings, included from conf.d/auth-sql.conf.ext.
+sql_driver = <%= $driver %>
+<%- if $driver == 'sqlite' { -%>
+sqlite_path = <%= $path %>
+<%- } elsif $driver == 'pgsql' { -%>
+pgsql <%= $host %> {
+  parameters {
+<%- if $database { -%>
+    dbname = <%= $database %>
+<%- } -%>
+<%- if $username { -%>
+    user = <%= $username %>
+<%- } -%>
+<%- if $quoted { -%>
+    password = <%= $quoted %>
+<%- } -%>
+  }
+}
+<%- } else { -%>
+mysql <%= $host %> {
+<%- if $database { -%>
+  dbname = <%= $database %>
+<%- } -%>
+<%- if $username { -%>
+  user = <%= $username %>
+<%- } -%>
+<%- if $quoted { -%>
+  password = <%= $quoted %>
+<%- } -%>
+}
+<%- } -%>

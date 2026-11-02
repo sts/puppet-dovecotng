@@ -126,7 +126,7 @@ protocol pop3 {
   # Space separated list of plugins to load (default is global mail_plugins).
   #mail_plugins = $mail_plugins
 <%- if scope['dovecotng::protocol::pop3::pop3_mail_plugins'] -%>
-  pop3_mail_plugins = <%= scope['dovecotng::protocol::pop3::pop3_mail_plugins'] %>
+<%= scope.call_function('dovecotng::mail_plugins', [scope['dovecotng::protocol::pop3::pop3_mail_plugins'], scope['dovecotng::version'], '  ']) %>
 <%- end -%>
 
   # Maximum number of POP3 connections allowed for a user from each IP address.

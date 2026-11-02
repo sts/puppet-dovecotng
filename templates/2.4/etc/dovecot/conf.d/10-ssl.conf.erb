@@ -1,0 +1,29 @@
+# This file is managed by Puppet.
+##
+## SSL settings
+##
+
+ssl = <%= scope['dovecotng::ssl'] %>
+
+# PEM encoded X.509 SSL/TLS certificate and private key.
+<%- if scope['dovecotng::ssl_cert'] -%>
+ssl_server_cert_file = <%= scope['dovecotng::ssl_cert'] %>
+<%- end -%>
+<%- if scope['dovecotng::ssl_key'] -%>
+ssl_server_key_file = <%= scope['dovecotng::ssl_key'] %>
+<%- end -%>
+<%- if scope['dovecotng::ssl_key_password'] && !scope['dovecotng::ssl_key_password'].empty? -%>
+# Read the private key password from a root owned file.
+ssl_server_key_password = <<%= scope['dovecotng::ssl_key_password'] %>
+<%- end -%>
+<%- if scope['dovecotng::ssl_dh_params'] -%>
+ssl_server_dh_file = <%= scope['dovecotng::ssl_dh_params'] %>
+<%- end -%>
+<%- if scope['dovecotng::ssl_min_protocol'] != 'false' -%>
+ssl_min_protocol = <%= scope['dovecotng::ssl_min_protocol'] %>
+<%- end -%>
+ssl_cipher_list = <%= scope['dovecotng::ssl_cipher_list'] %>
+ssl_server_prefer_ciphers = <%= scope['dovecotng::ssl_prefer_server_ciphers'] ? 'server' : 'client' %>
+<%- if scope['dovecotng::ssl_additional_config'] -%>
+<%= scope['dovecotng::ssl_additional_config'] %>
+<%- end -%>

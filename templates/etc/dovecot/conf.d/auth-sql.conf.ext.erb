@@ -16,15 +16,16 @@ userdb {
   driver = prefetch
 }
 
+<%- if @queries['user_query'] -%>
 userdb {
   driver = sql
   args = /etc/dovecot/dovecot-sql.conf.ext
 }
-
-# If you don't have any user-specific settings, you can avoid the user_query
-# by using userdb static instead of userdb sql, for example:
-# <doc/wiki/UserDatabase.Static.txt>
-#userdb {
-#  driver = static
-#  args = uid=<%= scope['dovecotng::vmail_user'] %> gid=<%= scope['dovecotng::vmail_group'] %> home=<%= scope['dovecotng::vmail_path'] %>/%d/%n
-#}
+<%- else -%>
+# Without a user_query, all users share the vmail user and a home directory
+# below vmail_path. <doc/wiki/UserDatabase.Static.txt>
+userdb {
+  driver = static
+  args = uid=<%= scope['dovecotng::vmail_user'] %> gid=<%= scope['dovecotng::vmail_group'] %> home=<%= scope['dovecotng::vmail_path'] %>/%d/%n
+}
+<%- end -%>
