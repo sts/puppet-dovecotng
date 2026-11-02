@@ -1,0 +1,62 @@
+##
+## LMTP specific settings
+##
+
+# Support proxying to other LMTP/SMTP servers by performing passdb lookups.
+#lmtp_proxy = no
+<%- unless scope['dovecotng::protocol::lmtp::lmtp_proxy'].nil? -%>
+lmtp_proxy = <%= scope.call_function('dovecotng::bool2dovecot', [ scope['dovecotng::protocol::lmtp::lmtp_proxy'] ]) %>
+<%- end -%>
+
+# When recipient address includes the detail (e.g. user+detail), try to save
+# the mail to the detail mailbox. See also recipient_delimiter and
+# lda_mailbox_autocreate settings.
+#lmtp_save_to_detail_mailbox = no
+<%- unless scope['dovecotng::protocol::lmtp::lmtp_save_to_detail_mailbox'].nil? -%>
+lmtp_save_to_detail_mailbox = <%= scope.call_function('dovecotng::bool2dovecot', [ scope['dovecotng::protocol::lmtp::lmtp_save_to_detail_mailbox'] ]) %>
+<%- end -%>
+
+# Verify quota before replying to RCPT TO. This adds a small overhead.
+#lmtp_rcpt_check_quota = no
+<%- unless scope['dovecotng::protocol::lmtp::lmtp_rcpt_check_quota'].nil? -%>
+lmtp_rcpt_check_quota = <%= scope.call_function('dovecotng::bool2dovecot', [ scope['dovecotng::protocol::lmtp::lmtp_rcpt_check_quota'] ]) %>
+<%- end -%>
+
+# Add "Received:" header to mails delivered.
+#lmtp_add_received_header = yes
+<%- unless scope['dovecotng::protocol::lmtp::lmtp_add_received_header'].nil? -%>
+lmtp_add_received_header = <%= scope.call_function('dovecotng::bool2dovecot', [ scope['dovecotng::protocol::lmtp::lmtp_add_received_header'] ]) %>
+<%- end -%>
+
+# Which recipient address to use for Delivered-To: header and Received:
+# header. The default is "final", which is the same as the one given to
+# RCPT TO command. "original" uses the address given in RCPT TO's ORCPT
+# parameter, "none" uses nothing. Note that "none" is currently always used
+# when a mail has multiple recipients.
+#lmtp_hdr_delivery_address = final
+<%- if scope['dovecotng::protocol::lmtp::lmtp_hdr_delivery_address'] -%>
+lmtp_hdr_delivery_address = <%= scope['dovecotng::protocol::lmtp::lmtp_hdr_delivery_address'] %>
+<%- end -%>
+
+# Workarounds for various client bugs:
+#   whitespace-before-path:
+#     Allow one or more spaces or tabs between `MAIL FROM:' and path and between
+#     `RCPT TO:' and path.
+#   mailbox-for-path:
+#     Allow using bare Mailbox syntax (i.e., without <...>) instead of full path
+#     syntax.
+#
+# The list is space-separated.
+#lmtp_client_workarounds =
+<%- if scope['dovecotng::protocol::lmtp::lmtp_client_workarounds'] -%>
+lmtp_client_workarounds = <%= scope['dovecotng::protocol::lmtp::lmtp_client_workarounds'] %>
+<%- end -%>
+
+protocol lmtp {
+  # Space separated list of plugins to load (default is global mail_plugins).
+<%- if scope['dovecotng::protocol::lmtp::lmtp_mail_plugins'] -%>
+  mail_plugins = <%= scope['dovecotng::protocol::lmtp::lmtp_mail_plugins'] %>
+<%- else -%>
+  #mail_plugins = $mail_plugins
+<%- end -%>
+}

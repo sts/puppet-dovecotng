@@ -11,6 +11,11 @@ class dovecotng::install
     false => 'absent',
   }
 
+  $lmtpd_state = ('lmtp' in $::dovecotng::protocols) ? {
+    true  => 'present',
+    false => 'absent',
+  }
+
   $managesieve_state = ('sieve' in $::dovecotng::protocols) ? {
     true  => 'present',
     false => 'absent',
@@ -53,6 +58,7 @@ class dovecotng::install
       # Protocols
       'dovecot-imapd':        ensure => $imapd_state;
       'dovecot-pop3d':        ensure => $pop3d_state;
+      'dovecot-lmtpd':        ensure => $lmtpd_state;
       'dovecot-managesieved': ensure => $managesieve_state;
 
       # Plugins
