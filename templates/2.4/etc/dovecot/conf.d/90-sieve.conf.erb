@@ -1,0 +1,35 @@
+# This file is managed by Puppet.
+##
+## Settings for the Sieve interpreter
+##
+
+protocol lda {
+  mail_plugins {
+    sieve = yes
+  }
+}
+
+# Personal sieve script location
+sieve_script personal {
+  driver = file
+  path = ~/sieve
+  active_path = ~/.dovecot.sieve
+}
+
+# Global scripts executed before the personal script
+sieve_script before {
+  type = before
+  driver = file
+  path = /var/lib/dovecot/sieve.d/
+}
+
+# notify and imapflags were removed in Pigeonhole 2.4; their successors
+# enotify and imap4flags are enabled by default.
+sieve_extensions {
+  spamtest = yes
+  spamtestplus = yes
+}
+
+sieve_spamtest_status_type = score
+sieve_spamtest_status_header = X-Spamd-Result: default: [[:alnum:]]+ \[(-?[[:digit:]]+\.[[:digit:]]+) / -?[[:digit:]]+\.[[:digit:]]+\]
+sieve_spamtest_score_max_header = X-Spamd-Result: default: [[:alnum:]]+ \[-?[[:digit:]]+\.[[:digit:]]+ / (-?[[:digit:]]+\.[[:digit:]]+)\]

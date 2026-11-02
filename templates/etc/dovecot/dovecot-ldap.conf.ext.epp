@@ -1,0 +1,45 @@
+<%- |
+  String            $uris,
+  Optional[String]  $binddn,
+  Any               $bindpw,
+  Boolean           $starttls,
+  Optional[String]  $base,
+  Optional[String]  $scope,
+  Optional[String]  $user_filter,
+  Optional[String]  $pass_attrs,
+  Optional[String]  $pass_filter,
+  Optional[String]  $default_pass_scheme,
+| -%>
+# This file is managed by Puppet.
+#
+# LDAP connection and lookups for the ldap passdb, see
+# https://doc.dovecot.org/2.3/configuration_manual/authentication/ldap/
+uris = <%= $uris %>
+<%- if $binddn { -%>
+dn = <%= $binddn %>
+<%- } -%>
+<%- if $bindpw { -%>
+dnpass = <%= $bindpw.unwrap %>
+<%- } -%>
+
+# StartTLS; ldaps:// URIs use implicit TLS instead.
+tls = <%= if $starttls { 'yes' } else { 'no' } %>
+ldaprc_path = /etc/ldap/ldap.conf
+auth_bind = no
+ldap_version = 3
+<%- if $base { -%>
+base = <%= $base %>
+<%- } -%>
+<%- if $scope { -%>
+scope = <%= $scope %>
+<%- } -%>
+<%- if $user_filter { -%>
+user_filter = <%= $user_filter %>
+<%- } -%>
+<%- if $pass_attrs { -%>
+pass_attrs = <%= $pass_attrs %>
+<%- } -%>
+<%- if $pass_filter { -%>
+pass_filter = <%= $pass_filter %>
+<%- } -%>
+default_pass_scheme = <%= if $default_pass_scheme { $default_pass_scheme } else { 'SSHA512' } %>

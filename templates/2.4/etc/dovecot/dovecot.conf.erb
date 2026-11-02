@@ -1,0 +1,19 @@
+# This file is managed by Puppet.
+#
+# Dovecot 2.4 requires these to be the first settings in the configuration.
+# Raise them only after reviewing the changes listed in the Dovecot upgrade
+# notes, as they change the defaults Dovecot applies.
+dovecot_config_version = <%= scope['dovecotng::dovecot_config_version'] %>
+dovecot_storage_version = <%= scope['dovecotng::dovecot_storage_version'] %>
+
+# Enable installed protocols
+!include_try /usr/share/dovecot/protocols.d/*.protocol
+
+# Show more verbose process titles (in ps).
+verbose_proctitle = yes
+
+!include conf.d/*.conf
+
+# A config file can also tried to be included without giving an error if
+# it's not found:
+!include_try local.conf

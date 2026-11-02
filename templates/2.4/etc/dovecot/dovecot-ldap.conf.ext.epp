@@ -1,0 +1,36 @@
+<%- |
+  String            $uris,
+  Optional[String]  $binddn,
+  Any               $bindpw,
+  Boolean           $starttls,
+  Optional[String]  $base,
+  Optional[String]  $scope,
+  Optional[String]  $user_filter,
+  Optional[String]  $pass_attrs,
+  Optional[String]  $pass_filter,
+  Optional[String]  $default_pass_scheme,
+| -%>
+<%-
+  # This template may be rendered on the agent (Deferred password), so it
+  # only uses built-in functions.
+  $secret = $bindpw ? { undef => undef, default => $bindpw.unwrap }
+-%>
+# This file is managed by Puppet.
+#
+# LDAP connection settings, included from conf.d/auth-ldap.conf.ext.
+ldap_uris = <%= $uris %>
+<%- if $binddn { -%>
+ldap_auth_dn = <%= $binddn %>
+<%- } -%>
+<%- if $secret { -%>
+ldap_auth_dn_password = "<%= $secret.regsubst('(["\\\\])', '\\\\\1', 'G') %>"
+<%- } -%>
+# StartTLS; ldaps:// URIs use implicit TLS instead.
+ldap_starttls = <%= if $starttls { 'yes' } else { 'no' } %>
+ldap_version = 3
+<%- if $base { -%>
+ldap_base = <%= $base %>
+<%- } -%>
+<%- if $scope { -%>
+ldap_scope = <%= $scope %>
+<%- } -%>

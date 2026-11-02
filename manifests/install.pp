@@ -1,75 +1,37 @@
 class dovecotng::install
 {
+  $auth = $dovecotng::_auth_backend
 
-  $imapd_state = ('imap' in $::dovecotng::protocols) ? {
-    true  => 'present',
-    false => 'absent',
+  # Packages and whether the configuration needs them.
+  $packages = {
+    'dovecot-core'         => true,
+
+    # Protocols
+    'dovecot-imapd'        => 'imap' in $dovecotng::protocols,
+    'dovecot-pop3d'        => 'pop3' in $dovecotng::protocols,
+    'dovecot-lmtpd'        => 'lmtp' in $dovecotng::protocols,
+    'dovecot-managesieved' => 'sieve' in $dovecotng::protocols,
+
+    # Plugins
+    'dovecot-sieve'        => 'sieve' in $dovecotng::_plugins,
+    'dovecot-antispam'     => 'antispam' in $dovecotng::_plugins,
+
+    # Database drivers
+    'dovecot-ldap'         => $auth['type'] == 'ldap',
+    'dovecot-mysql'        => $auth['type'] == 'sql' and $auth['driver'] == 'mysql',
+    'dovecot-pgsql'        => $auth['type'] == 'sql' and $auth['driver'] == 'pgsql',
+    'dovecot-sqlite'       => $auth['type'] == 'sql' and $auth['driver'] == 'sqlite',
   }
 
-  $pop3d_state = ('pop3' in $::dovecotng::protocols) ? {
-    true  => 'present',
-    false => 'absent',
-  }
-
-  $lmtpd_state = ('lmtp' in $::dovecotng::protocols) ? {
-    true  => 'present',
-    false => 'absent',
-  }
-
-  $managesieve_state = ('sieve' in $::dovecotng::protocols) ? {
-    true  => 'present',
-    false => 'absent',
-  }
-
-  $antispam_state = ('antispam' in $::dovecotng::plugins) ? {
-    true  => 'present',
-    false => 'absent',
-  }
-
-  $sieve_state = ('sieve' in $::dovecotng::plugins) ? {
-    true  => 'present',
-    false => 'absent',
-  }
-
-  $mysql_state = "${::dovecotng::auth_backend['type']}/${::dovecotng::auth_backend['driver']}" ? {
-    'sql/mysql' => 'present',
-    default     => 'absent',
-  }
-
-  $sqlite_state = "${::dovecotng::auth_backend['type']}/${::dovecotng::auth_backend['driver']}" ? {
-    'sql/sqlite' => 'present',
-    default      => 'absent',
-  }
-
-  $pgsql_state = "${::dovecotng::auth_backend['type']}/${::dovecotng::auth_backend['driver']}" ? {
-    'sql/pgsql' => 'present',
-    default     => 'absent',
-  }
-
-  $ldap_state = "${::dovecotng::auth_backend['type']}/${::dovecotng::auth_backend['driver']}" ? {
-    'ldap/ldap' => 'present',
-    default     => 'absent',
-  }
-
-  if $::dovecotng::package_manage {
-    package {
-      'dovecot-core':         ensure => present;
-
-      # Protocols
-      'dovecot-imapd':        ensure => $imapd_state;
-      'dovecot-pop3d':        ensure => $pop3d_state;
-      'dovecot-lmtpd':        ensure => $lmtpd_state;
-      'dovecot-managesieved': ensure => $managesieve_state;
-
-      # Plugins
-      'dovecot-sieve':        ensure => $sieve_state;
-      'dovecot-antispam':     ensure => $antispam_state;
-
-      # Database drivers
-      'dovecot-ldap':         ensure => $ldap_state;
-      'dovecot-mysql':        ensure => $mysql_state;
-      'dovecot-pgsql':        ensure => $pgsql_state;
-      'dovecot-sqlite':       ensure => $sqlite_state;
+  # Unneeded packages are only removed when purge_packages is set, so
+  # packages installed by hand or by other modules are left alone.
+  if $dovecotng::package_manage {
+    $packages.each |String $package, Boolean $needed| {
+      if $needed {
+        package { $package: ensure => present }
+      } elsif $dovecotng::purge_packages {
+        package { $package: ensure => absent }
+      }
     }
   }
 }

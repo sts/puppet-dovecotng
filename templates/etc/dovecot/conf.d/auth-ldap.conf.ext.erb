@@ -14,5 +14,5 @@ passdb {
 # <doc/wiki/UserDatabase.Static.txt>
 userdb {
   driver = static
-  args = uid=vmail gid=vmail home=/srv/mail/%d/%n
+  args = uid=<%= scope['dovecotng::vmail_user'] %> gid=<%= scope['dovecotng::vmail_group'] %> home=<%= scope['dovecotng::vmail_path'] %>/%d/%n
 }

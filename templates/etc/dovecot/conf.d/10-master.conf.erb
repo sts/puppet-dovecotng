@@ -101,7 +101,7 @@ service auth {
 <% end -%>
 
   # Auth process is run as this user.
-  user = $default_internal_user
+  user = <%= scope['dovecotng::version'] == '2.4' ? '$SET:default_internal_user' : '$default_internal_user' %>
 }
 <% if scope['dovecotng::stats'] == true %>
 service stats {
@@ -109,7 +109,7 @@ service stats {
   client_limit = <%= scope['dovecotng::default_client_limit'] * 4 %>
 
   unix_listener stats-writer {
-    group = vmail
+    group = <%= scope['dovecotng::vmail_group'] %>
     mode = 0660
   }
 }
@@ -118,7 +118,7 @@ service auth-worker {
   # Auth worker process is run as root by default, so that it can access
   # /etc/shadow. If this isn't necessary, the user should be changed to
   # $default_internal_user.
-  user = $default_internal_user
+  user = <%= scope['dovecotng::version'] == '2.4' ? '$SET:default_internal_user' : '$default_internal_user' %>
 }
 
 service dict {

@@ -1,0 +1,36 @@
+# This file is managed by Puppet.
+#
+# Authentication for SQL users. Included from 10-auth.conf.
+
+# The SQL driver and connection settings contain credentials and live in a
+# root-only file. include_try skips it for non-root processes such as
+# dovecot-lda, which do not need it.
+!include_try /etc/dovecot/dovecot-sql.conf.ext
+
+passdb sql {
+<%- if @auth['default_pass_scheme'] -%>
+  default_password_scheme = <%= @auth['default_pass_scheme'] %>
+<%- end -%>
+  query = <%= @queries['password_query'] %>
+}
+
+# "prefetch" uses the userdb_* fields returned by the passdb query.
+userdb prefetch {
+}
+
+<%- if @queries['user_query'] -%>
+userdb sql {
+  query = <%= @queries['user_query'] %>
+<%- if @queries['iterate_query'] -%>
+  iterate_query = <%= @queries['iterate_query'] %>
+<%- end -%>
+}
+<%- else -%>
+userdb static {
+  fields {
+    uid = <%= scope['dovecotng::vmail_user'] %>
+    gid = <%= scope['dovecotng::vmail_group'] %>
+    home = <%= scope['dovecotng::vmail_path'] %>/%{user|domain}/%{user|username}
+  }
+}
+<%- end -%>

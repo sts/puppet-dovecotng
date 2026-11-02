@@ -1,0 +1,50 @@
+<%- |
+  String           $driver,
+  Optional[String] $host,
+  Optional[String] $path,
+  Optional[String] $database,
+  Optional[String] $username,
+  Any              $password,
+  Optional[String] $default_pass_scheme,
+  Hash             $queries,
+| -%>
+<%-
+  # This template may be rendered on the agent (Deferred password), so it
+  # only uses built-in functions.
+  $secret = $password ? { undef => undef, default => $password.unwrap }
+  if $driver == 'sqlite' {
+    $connect = $path
+  } else {
+    # Dovecot 2.3 splits the connect string on spaces and has no quoting for
+    # MySQL, so a password containing whitespace cannot be represented.
+    if $secret =~ String and $secret =~ /\s/ {
+      fail('dovecotng: the SQL password must not contain whitespace on Dovecot 2.3')
+    }
+    # libpq reads quoted values with backslash escapes; MySQL takes the rest
+    # of the value literally.
+    $quoted = $driver ? {
+      'pgsql' => "'${secret.regsubst('([\'\\\\])', '\\\\\1', 'G')}'",
+      default => $secret,
+    }
+    $connect = [
+      $host ? { undef => undef, default => "host=${host}" },
+      $database ? { undef => undef, default => "dbname=${database}" },
+      $username ? { undef => undef, default => "user=${username}" },
+      $secret ? { undef => undef, default => "password=${quoted}" },
+    ].filter |$part| { $part =~ NotUndef }.join(' ')
+  }
+-%>
+# This file is managed by Puppet.
+#
+# SQL connection and queries for the sql passdb and userdb, see
+# https://doc.dovecot.org/2.3/configuration_manual/authentication/sql/
+driver = <%= $driver %>
+connect = <%= $connect %>
+<%- if $default_pass_scheme { -%>
+default_pass_scheme = <%= $default_pass_scheme %>
+<%- } -%>
+<%- ['password_query', 'user_query', 'iterate_query'].each |$key| { -%>
+<%- if $queries[$key] { -%>
+<%= $key %> = <%= $queries[$key] %>
+<%- } -%>
+<%- } -%>

@@ -21,6 +21,7 @@ describe 'dovecotng' do
   let(:params) do
     {
       service_manage: false,
+      auth_backend: SQL_BACKEND,
       ssl_cert: '/etc/ssl/certs/mail.example.test.pem',
       ssl_key: '/etc/ssl/private/mail.example.test.key',
       plugins: ['sieve'],
@@ -49,7 +50,7 @@ describe 'dovecotng' do
     is_expected.to contain_package('dovecot-imapd').with_ensure('present')
     is_expected.to contain_package('dovecot-pop3d').with_ensure('present')
     is_expected.to contain_package('dovecot-sieve').with_ensure('present')
-    is_expected.to contain_package('dovecot-antispam').with_ensure('absent')
+    is_expected.not_to contain_package('dovecot-antispam')
   end
 
   it 'renders the configured TLS paths and minimum protocol' do
@@ -110,7 +111,7 @@ describe 'dovecotng' do
   end
 
   it 'does not manage LMTP unless the protocol is enabled' do
-    is_expected.to contain_package('dovecot-lmtpd').with_ensure('absent')
+    is_expected.not_to contain_package('dovecot-lmtpd')
     is_expected.not_to contain_file('/etc/dovecot/conf.d/20-lmtp.conf')
   end
 

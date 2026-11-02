@@ -5,7 +5,7 @@ class dovecotng::plugin::antispam(
   $antispam_mail_notspam = 'learn_ham',
 ) {
 
-  $dovecotng_antispam_state = ('antispam' in $::dovecotng::plugins) ? {
+  $dovecotng_antispam_state = ('antispam' in $dovecotng::_plugins) ? {
     true  => 'present',
     false => 'absent',
   }

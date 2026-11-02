@@ -14,12 +14,17 @@ class dovecotng::protocol::pop3(
   Optional[Integer] $pop3_mail_max_userip_connections = undef,
 ) {
 
+  if $dovecotng::version == '2.4' and $pop3_uidl_format =~ String and $pop3_uidl_format !~ /%\{/ {
+    fail("dovecotng: pop3_uidl_format must use %{...} variables on Dovecot 2.4, e.g. '%{uidvalidity|hex(8)}%{uid|hex(8)}'")
+  }
+
   file { '/etc/dovecot/conf.d/20-pop3.conf':
     ensure  => present,
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
     content => template('dovecotng/etc/dovecot/conf.d/20-pop3.conf.erb'),
+    notify  => Class['dovecotng::service'],
   }
 }
 

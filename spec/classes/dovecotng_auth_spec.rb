@@ -22,6 +22,8 @@ describe 'dovecotng' do
     {
       package_manage: true,
       service_manage: false,
+      ssl_cert: '/etc/ssl/certs/mail.pem',
+      ssl_key: '/etc/ssl/private/mail.key',
       plugins: [],
       protocols: {},
       auth_backend: auth_backend,
@@ -48,18 +50,19 @@ describe 'dovecotng' do
 
     it 'selects only the MySQL Dovecot driver' do
       is_expected.to contain_package('dovecot-mysql').with_ensure('present')
-      is_expected.to contain_package('dovecot-sqlite').with_ensure('absent')
-      is_expected.to contain_package('dovecot-pgsql').with_ensure('absent')
-      is_expected.to contain_package('dovecot-ldap').with_ensure('absent')
+      is_expected.not_to contain_package('dovecot-sqlite')
+      is_expected.not_to contain_package('dovecot-pgsql')
+      is_expected.not_to contain_package('dovecot-ldap')
     end
 
     it 'renders the MySQL connection and protects it from Puppet diffs' do
       is_expected.to contain_file('/etc/dovecot/dovecot-sql.conf.ext')
         .with_mode('0640')
         .with_show_diff(false)
-        .with_content(%r{^driver = mysql$})
-        .with_content(%r{^connect = host=127\.0\.0\.1 dbname=mail user=dovecot password=secret$})
-        .with_content(%r{^default_pass_scheme = SHA512-CRYPT$})
+      expect(sensitive_content('/etc/dovecot/dovecot-sql.conf.ext'))
+        .to match(%r{^driver = mysql$})
+        .and match(%r{^connect = host=127\.0\.0\.1 dbname=mail user=dovecot password=secret$})
+        .and match(%r{^default_pass_scheme = SHA512-CRYPT$})
     end
   end
 
@@ -78,11 +81,11 @@ describe 'dovecotng' do
     it { is_expected.to compile.with_all_deps }
 
     it 'selects the SQLite driver and renders its database path' do
-      is_expected.to contain_package('dovecot-mysql').with_ensure('absent')
+      is_expected.not_to contain_package('dovecot-mysql')
       is_expected.to contain_package('dovecot-sqlite').with_ensure('present')
-      is_expected.to contain_file('/etc/dovecot/dovecot-sql.conf.ext')
-        .with_content(%r{^driver = sqlite$})
-        .with_content(%r{^connect = /var/lib/dovecot/users\.sqlite$})
+      expect(sensitive_content('/etc/dovecot/dovecot-sql.conf.ext'))
+        .to match(%r{^driver = sqlite$})
+        .and match(%r{^connect = /var/lib/dovecot/users\.sqlite$})
     end
   end
 end

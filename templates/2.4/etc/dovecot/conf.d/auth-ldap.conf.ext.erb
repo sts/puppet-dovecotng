@@ -1,0 +1,28 @@
+# This file is managed by Puppet.
+#
+# Authentication for LDAP users. Included from 10-auth.conf.
+
+# The LDAP connection settings contain credentials and live in a root-only
+# file. include_try skips it for non-root processes such as dovecot-lda,
+# which do not need it.
+!include_try /etc/dovecot/dovecot-ldap.conf.ext
+
+passdb ldap {
+  default_password_scheme = <%= @auth['default_pass_scheme'] || 'SSHA512' %>
+<%- if @pass_filter -%>
+  ldap_filter = <%= @pass_filter %>
+<%- end -%>
+  fields {
+<%- @pass_fields.sort.each do |field, value| -%>
+    <%= field %> = <%= value %>
+<%- end -%>
+  }
+}
+
+userdb static {
+  fields {
+    uid = <%= scope['dovecotng::vmail_user'] %>
+    gid = <%= scope['dovecotng::vmail_group'] %>
+    home = <%= scope['dovecotng::vmail_path'] %>/%{user|domain}/%{user|username}
+  }
+}
